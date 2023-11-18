@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Web Development Project To-Do List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+
+    h1 {
+      text-align: center;
+      color: #3498db;
+    }
+
+    form {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    select {
+      margin-right: 10px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 4px;
+      background-color: #3498db;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .task-list {
+      background-color: white;
+      border-radius: 4px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .task-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      transition: background-color 0.3s ease, transform 0.3s ease-in-out;
+    }
+
+    .task-item:hover {
+      background-color: #f9f9f9;
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .pop-animation {
+      animation: pop 0.5s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+  <h1>Web Development Project To-Do List</h1>
+  
+  <!-- Form to add new tasks -->
+  <form id="taskForm">
+    <input type="text" id="taskName" placeholder="Enter task name" required>
+    <input type="date" id="taskDeadline" required>
+    <select id="taskPriority" required>
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low">Low</option>
+    </select>
+    <button type="submit">Add Task</button>
+  </form>
+
+  <!-- Task List -->
+  <div class="task-list">
+    <!-- Tasks will be dynamically added here using JavaScript -->
+  </div>
+
+  <script>
+    // Sample tasks data
+    let tasks = [
+      { id: 1, taskName: 'Fix login authentication issues', deadline: '2023-11-30', priority: 'High', completed: false },
+      // Add more tasks similarly
+    ];
+
+    // Function to display tasks on the web page
+    function displayTasks() {
+      const taskList = document.querySelector('.task-list');
+      taskList.innerHTML = ''; // Clear existing tasks before rendering
+
+      tasks.forEach(task => {
+        const taskItem = document.createElement('div');
+        taskItem.classList.add('task-item');
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = task.completed;
+        checkbox.addEventListener('change', function() {
+          task.completed = this.checked;
+          // Add logic to update task completion status
+        });
+
+        const taskDetails = document.createElement('span');
+        taskDetails.textContent = `${task.taskName} - Deadline: ${task.deadline}, Priority: ${task.priority}`;
+
+        taskItem.appendChild(checkbox);
+        taskItem.appendChild(taskDetails);
+        taskList.appendChild(taskItem);
+
+        // Add pop animation to newly added tasks
+        taskItem.classList.add('pop-animation');
+        setTimeout(() => {
+          taskItem.classList.remove('pop-animation');
+        }, 500);
+      });
+    }
+
+    // Function to add a new task
+    function addTask(taskName, deadline, priority) {
+      const newTask = {
+        id: tasks.length + 1,
+        taskName: taskName,
+        deadline: deadline,
+        priority: priority,
+        completed: false
+      };
+
+      tasks.push(newTask);
+      displayTasks();
+    }
+
+    // Handle form submission to add a new task
+    const taskForm = document.getElementById('taskForm');
+    taskForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const taskName = document.getElementById('taskName').value;
+      const taskDeadline = document.getElementById('taskDeadline').value;
+      const taskPriority = document.getElementById('taskPriority').value;
+
+      addTask(taskName, taskDeadline, taskPriority);
+
+      // Clear input fields after adding task
+      document.getElementById('taskName').value = '';
+      document.getElementById('taskDeadline').value = '';
+      document.getElementById('taskPriority').value = 'High';
+    });
+
+    // Call the displayTasks function to render tasks on page load
+    displayTasks();
+  </script>
+</body>
+</html>
